@@ -11,6 +11,9 @@
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
         <link href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" rel="stylesheet" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
+        <!-- import CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
         <!-- Styles -->
         <style>
             html, body {
@@ -66,45 +69,66 @@
         </style>
     </head>
     <body>
-        <div id="app">
 
-            <div class="content">
+        <el-container id="app">
 
-                {{-- Display Colour Categories --}}
-                <div v-for="category in categories"
-                     :key="category.id"
-                     :style="{backgroundColor: category.color}"
-                     style="width: 100px; height: 100px; margin-right: 15px; display: inline-block;"
-                     @mouseover="selectCategory(category.id)">
-                </div>
+            <el-header :style="{fontSize: '20px', lineHeight: '60px'}">
+                <a href="https://github.com/YeeunYou/Vue.js-basic-ecommerce" target="_blank">
+                    <i class="fab fa-github" :style="{marginRight: '10px'}"></i>
+                </a>
+                Basic photo album page with Vue.js
+            </el-header>
 
-                {{-- Display Products associated with the selected category --}}
-                <ul>
-                    <li v-if="selectedCategoryId === product.categoryId"
-                        v-for="product in products"
-                        :key="product.id">
-                        <img :src="product.image"
-                             :alt="product.name"
-                             style="width: 500px;"
-                             @click="selectProduct(product.id)">
-                        <h1>@{{ product.name }}</h1>
-                        <span v-if="!product.quantity">
-                            <i class="far fa-envelope"></i>
-                            Email me when in stock
-                        </span>
-                        <span v-else-if="product.quantity < 3">
-                            Hurry! Only @{{ product.quantity }} left
-                        </span>
-                        <span v-else>
-                            @{{ product.quantity }} left
-                        </span>
-                    </li>
-                </ul>
+            <el-main>
+                <el-row :gutter="20" type="flex" justify="center">
 
-            </div>
-        </div>
+                    <el-col :span="14">
+                        <div>
+                            @{{ productStatus }}
+                        </div>
+                        {{-- Display Products associated with the selected category --}}
+                        <el-col :span="12" v-show="selectedCategoryId === product.categoryId"
+                            v-for="product in products"
+                            :key="product.id">
+                            <h1>@{{ product.name }}</h1>
+                            <img :src="product.image"
+                                 :alt="product.name"
+                                 style="width: 100%; max-width: 500px"
+                                 @click="selectProduct(product.id)">
+
+                            {{--<div v-if="!product.quantity">--}}
+                                {{--<i class="far fa-envelope"></i>--}}
+                                {{--Email me when in stock--}}
+                            {{--</div>--}}
+                            {{--<div v-else-if="product.quantity < 3">--}}
+                                {{--Hurry! Only @{{ product.quantity }} left--}}
+                            {{--</div>--}}
+                            {{--<div v-else>--}}
+                                {{--@{{ product.quantity }} left--}}
+                            {{--</div>--}}
+                        </el-col>
+                    </el-col>
+
+                    <el-col :span="6">
+                        {{-- Display Colour Categories --}}
+                        <h1>Colour Themes</h1>
+                        <div v-for="category in categories"
+                             :key="category.id"
+                             :style="{backgroundColor: category.color}"
+                             style="width: 100px; height: 100px; margin-right: 15px; display: inline-block;"
+                             @mouseover="selectCategory(category.id)">
+                        </div>
+                    </el-col>
+
+                </el-row>
+            </el-main>
+
+        </el-container>
 
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <!-- import JavaScript -->
+        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
         <script>
 
@@ -115,7 +139,7 @@
                         {
                             id: 0,
                             name: 'Dinosaur Wallpaper',
-                            quantity: 5,
+                            quantity: 7,
                             image: '/images/blue-dinosaur.jpg',
                             categoryId: 0,
                         },
@@ -128,27 +152,34 @@
                         },
                         {
                             id: 2,
+                            name: 'Single Flower Wallpaper',
+                            quantity: 2,
+                            image: '/images/blue-single-flower.jpg',
+                            categoryId: 0,
+                        },
+                        {
+                            id: 3,
                             name: 'Flowers with Pink Background Wallpaper',
                             quantity: 2,
                             image: '/images/pink-flower.jpg',
                             categoryId: 1,
                         },
                         {
-                            id: 3,
+                            id: 4,
                             name: 'Pink Headphone Wallpaper',
                             quantity: 0,
                             image: '/images/pink-headphone.jpg',
                             categoryId: 1,
                         },
                         {
-                            id: 4,
+                            id: 5,
                             name: 'Pink Flowers with Yellow Background Wallpaper',
                             quantity: 10,
                             image: '/images/yellow-pinkflower.jpg',
                             categoryId: 2,
                         },
                         {
-                            id: 5,
+                            id: 6,
                             name: 'Yellow Flowers with Yellow Background Wallpaper',
                             quantity: 6,
                             image: '/images/yellow-yellowflower.jpg',
@@ -158,7 +189,7 @@
                     categories: [
                         {
                             id: 0,
-                            color: '#5EC7CD'    // Blue colour
+                            color: '#A5CFCB'    // Blue colour
                         },
                         {
                             id: 1,
@@ -187,6 +218,21 @@
                     }
                 },
                 computed: {
+                    productStatus(){
+                        // Loop through this.products array to get object data
+                        this.products.forEach((product) => {
+                            if(!product.quantity){
+                                console.log('test');
+                                return 'test';
+                            }else if(product.quantity < 3){
+                                console.log('test2');
+                                return 'test2';
+                            }else{
+                                console.log('test3');
+                                return 'test3';
+                            }
+                        });
+                    },
                 },
             });
 
